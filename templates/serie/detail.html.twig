@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h2>{{ serie.titre }}</h2>
+    <div style="display : flex; flex-direction: row">
+{#    <div class="detailSerie">#}
+{#        <img src="{{ asset('images/'~serie.image) }}">#}
+{#        <h2>{{ serie.titre }}</h2>#}
+{#    </div>#}
+
+    {% for saison in serie.saisons %}
+        <div class="detailSerie" style="margin : 5px">
+            <img style="height : 60vh" src="{{ asset('images/'~saison.image) }}">
+            <h2>Saison {{ saison.numero }}</h2>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
+
+
+{% block title %}
+
+{% endblock %}
+

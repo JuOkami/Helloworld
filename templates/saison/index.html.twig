@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Creation saison{% endblock %}
+
+{% block body %}
+
+    <div>
+        {% form_theme formSaison 'bootstrap_5_horizontal_layout.html.twig' %}
+        {{ form(formSaison) }}
+    </div>
+
+{% endblock %}
