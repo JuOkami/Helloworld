@@ -2,18 +2,24 @@
 
 {% block body %}
 <h2>{{ serie.titre }}</h2>
-    <div style="display : flex; flex-direction: row">
+    <div style="display : flex; flex-direction: row; flex-wrap: wrap">
 {#    <div class="detailSerie">#}
 {#        <img src="{{ asset('images/'~serie.image) }}">#}
 {#        <h2>{{ serie.titre }}</h2>#}
 {#    </div>#}
 
     {% for saison in serie.saisons %}
-        <div class="detailSerie" style="margin : 5px">
-            <img style="height : 60vh" src="{{ asset('images/'~saison.image) }}">
+        <div class="ficheSerie">
+            <img style="height : 40vh" src="{{ asset('images/saisons/'~saison.image) }}">
             <h2>Saison {{ saison.numero }}</h2>
         </div>
     {% endfor %}
+        <a href="{{ path('app_saison', {'serie':serie.id}) }}">
+        <div class="detailSerie" style="margin : 5px">
+            <img style="height : 40vh" src="{{ asset('images/Logo-plus.png') }}">
+            <h2>Ajouter</h2>
+        </div>
+        </a>
     </div>
 {% endblock %}
 

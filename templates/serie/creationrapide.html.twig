@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+
+    <div>
+        <form method="get" action="{{ path('_traitementcreationrapide') }}">
+            <label for="nom">Titre de la série</label>
+            <input id="nom" name="nom"></br>
+            <label for="image">Image</label>
+            <input id="image" name="image"></br>
+            <label for="saisons">Nombre de saisons</label>
+            <input type="number" id="saisons" name="saisons"></br>
+            <button type="submit" >valider</button>
+        </form>
+    </div>
+
+{% endblock %}

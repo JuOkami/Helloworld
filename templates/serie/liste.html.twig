@@ -7,15 +7,15 @@
     {% for serie in series %}
         <a href="serie/{{ serie.id }}">
         <div class="ficheSerie">
-        <img class="illustrationListe" src="{{ asset('images/'~serie.image) }}">
-        <h2>{{ serie.titre }}</h2>
+        <img class="illustrationListe" src="{{ asset('images/series/'~serie.image) }}">
+        <h2 class="titreListe">{{ serie.titre }}</h2>
             <p>{{ serie.saisons | length }} saisons</p>
         </div>
         </a>
     {% endfor %}
         <a href="creation">
             <div class="ficheSerie">
-                <img class="illustrationListe" src="images/plus-sign-vector-icon.jpg">
+                <img class="illustrationListe" src="images/Logo-plus.png">
                 <h2>Ajouter</h2>
             </div>
         </a>

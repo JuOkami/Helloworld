@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Saison;
+use App\Entity\Serie;
 use App\Form\SaisonType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,19 +14,21 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SaisonController extends AbstractController
 {
-    #[Route('/saison', name: 'app_saison')]
+    #[Route('/saison/{serie}', name: 'app_saison')]
     public function index(
         EntityManagerInterface $entityManager,
-        Request $requete
+        Request $requete,
+        Serie $serie
     ): Response
     {
         $saison = new Saison();
+        $saison->setSerie($serie);
         $formSaison = $this->createForm(SaisonType::class, $saison);
         $formSaison->handleRequest($requete);
         if ($formSaison->isSubmitted() && $formSaison->isValid()){
             $entityManager->persist($saison);
             $entityManager->flush();
-            return $this->redirectToRoute('app_saison');
+            return $this->redirectToRoute('serie-detail', ['serie' => $serie->getId()]);
         }
         return $this->render('saison/index.html.twig', [
             'formSaison' => $formSaison,

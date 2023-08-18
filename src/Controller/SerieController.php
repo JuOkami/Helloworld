@@ -2,14 +2,18 @@
 
 namespace App\Controller;
 
+use App\Entity\Saison;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SerieController extends AbstractController
@@ -31,22 +35,6 @@ class SerieController extends AbstractController
             'blagues' => $blagues
         ]);
     }
-//
-//        #[Route(
-//            '/serie/{id}',
-//            name: 'serie-detail',
-//            requirements:["id" => "\d+"])]
-//    public function detail(
-//        $id,
-//        SerieRepository $serieRepository
-//        ): Response
-//    {
-//       $serie = $serieRepository->findOneBy(["id" => $id]);
-//        return $this->render('serie/detail.html.twig', [
-//            'controller_name' => 'SerieController',
-//            'serie' => $serie
-//        ]);
-//    }
 
     #[Route(
         '/serie/{serie}',
@@ -66,6 +54,7 @@ class SerieController extends AbstractController
         '/creation',
         name: '_creation',
         )]
+    #[IsGranted('ROLE_DEV')]
     public function creation(
         EntityManagerInterface $entityManager,
         Request $requete
@@ -88,4 +77,69 @@ class SerieController extends AbstractController
             'controller_name' => 'SerieController'
         ]);
     }
+
+    #[Route(
+        '/creationrapide',
+        name: '_creationrapide',
+    )]
+    #[IsGranted('ROLE_DEV')]
+    public function creationrapide(
+        EntityManagerInterface $entityManager,
+        Request $requete
+    ): Response
+    {
+
+        $reception = $requete->query->get("nom");
+        var_dump($reception);
+
+        return $this->render('serie/creationrapide.html.twig', [
+            'controller_name' => 'SerieController'
+        ]);
+    }
+
+    #[Route(
+        '/traitementcreationrapide',
+        name: '_traitementcreationrapide',
+    )]
+    #[IsGranted('ROLE_DEV')]
+    public function traitementcreationrapide(
+        SerieRepository $serieRepository,
+        EntityManagerInterface $entityManager,
+        Request $requete,
+    ): Response
+    {
+
+        $nom = $requete->query->get("nom");
+        $imageserie = $requete->query->get("image");
+        $nombresaisons = $requete->query->get("saisons");
+        $serie = new Serie();
+        $serie->setTitre($nom);
+        $serie->setImage($imageserie.".jpg");
+        $entityManager->persist($serie);
+        $entityManager->flush();
+//        $serieavecid = $serieRepository->findBy(["titre" => $nom])[0];
+//        $id = $serieavecid->getId();
+
+        for ($i = 1; $i <= $nombresaisons; $i++){
+            $saison = new Saison();
+            $saison->setNbEpisodes(12);
+            $saison->setSerie($serie);
+            $saison->setImage($imageserie."_".$i.".jpg");
+            $saison->setNumero($i);
+            $entityManager->persist($saison);
+            $entityManager->flush();
+
+        }
+        return $this->redirectToRoute('serie-detail', ['serie' => $serie->getId()]);
+    }
+
+//    #[Route('/api/series', name:'_api_series')]
+//    function api(
+//        SerieRepository $serieRepository,
+//        SerializerInterface $serializer
+//    ): Response {
+//        $series = $serieRepository->findAll();
+//
+//        return new JsonResponse($serializer->serialize($series, 'json', ['groups' => 'serie:read']));
+//    }
 }
